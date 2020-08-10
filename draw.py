@@ -9,6 +9,7 @@ class Draw():
     def __init__(self):
         self.windowText = ""
         self.hWindow = ""
+        self.coords = [0, 0]
 
         # New code: Create and start the thread
         thr = threading.Thread(target=self.main)
@@ -49,8 +50,8 @@ class Draw():
             style,
             10,  # x
             10,  # y
-            300,  # width
-            300,  # height
+            1920,  # width
+            1080,  # height
             None,  # hWndParent
             None,  # hMenu
             hInstance,
@@ -79,8 +80,9 @@ class Draw():
     def sendExit(self):
         win32api.SendMessage(self.hWindow, win32con.WM_DESTROY, None, None)
 
-    def sendDraw(self):
-        pass
+    def sendDraw(self, coords):
+        self.coords = coords
+        # win32api.SendMessage(self.hWindow, win32con.WM_PAINT, None, None)
 
     def customDraw(self, hWindow):
 
@@ -104,30 +106,31 @@ class Draw():
         if message == win32con.WM_PAINT:
             hDC, paintStruct = win32gui.BeginPaint(hWnd)
 
-            fontSize = 26
-            lf = win32gui.LOGFONT()
-            lf.lfFaceName = "Stencil"
-            lf.lfHeight = fontSize
-            lf.lfWeight = 600
+            #fontSize = 26
+            #lf = win32gui.LOGFONT()
+            #lf.lfFaceName = "Stencil"
+            #lf.lfHeight = fontSize
+            #lf.lfWeight = 600
+            #lf.lfQuality = win32con.NONANTIALIASED_QUALITY
 
-            lf.lfQuality = win32con.NONANTIALIASED_QUALITY
-            hf = win32gui.CreateFontIndirect(lf)
-            win32gui.SelectObject(hDC, hf)
-            win32gui.SetTextColor(hDC, win32api.RGB(240, 0, 50))
-
+            #hf = win32gui.CreateFontIndirect(lf)
+            #win32gui.SelectObject(hDC, hf)
+            #win32gui.SetTextColor(hDC, win32api.RGB(240, 0, 50))
+            m = self.coords
             red = win32api.RGB(255, 0, 0)  # Red
-
             rect = win32gui.GetClientRect(hWnd)
+            win32gui.RedrawWindow(hWnd, rect, None, win32con.RDW_INVALIDATE)
 
-            rgn = win32gui.CreateRectRgnIndirect((0, 0, 100, 100))
-            for x in range(10):
-                win32gui.SetPixel(hDC, m[0]+x, m[1], red)
-                win32gui.SetPixel(hDC, m[0]+x, m[1]+10, red)
-                for y in range(10):
-                    win32gui.SetPixel(hDC, m[0], m[1]+y, red)
-                    win32gui.SetPixel(hDC, m[0]+10, m[1]+y, red)
-
-            past_coordinates = (m[0]-20, m[1]-20, m[0]+20, m[1]+20)
+            try:
+                for x in range(10):
+                    win32gui.SetPixel(hDC, m[0]+x, m[1], red)
+                    win32gui.SetPixel(hDC, m[0]+x, m[1]+10, red)
+                    for y in range(10):
+                        win32gui.SetPixel(hDC, m[0], m[1]+y, red)
+                        win32gui.SetPixel(hDC, m[0]+10, m[1]+y, red)
+            except:
+                print("pizdec vsemu m[", m[0], ",", m[1], "]")
+                # raise
 
             win32gui.EndPaint(hWnd, paintStruct)
             return 0
