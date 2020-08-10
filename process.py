@@ -5,10 +5,12 @@ from draw import Draw
 import win32gui
 import win32com.client
 from pynput.mouse import Controller
+import threading
 
 
 class Process():
     def __init__(self, exitChar="d"):
+        self.stopLock = threading.Lock()
         self.reader = KeyAsyncReader()
         self.exitChar = ""
         self.reader.startReading(self.readCallback)
@@ -19,8 +21,12 @@ class Process():
             try:
                 #shell = win32com.client.Dispatch("WScript.Shell")
                 # shell.SendKeys('%')
-                #handle = win32gui.GetActiveWindow()
-                #bbox = win32gui.GetWindowRect(handle)
+                handle = win32gui.GetForegroundWindow()
+                bbox = win32gui.GetWindowRect(handle)
+                self.stopLock.acquire()
+                print(handle)
+                print(bbox)
+                self.stopLock.release()
                 self.draw.sendDraw(mouse.position)
                 if self.exitChar == exitChar:
                     self.draw.sendExit()

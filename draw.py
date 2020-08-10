@@ -10,6 +10,7 @@ class Draw():
         self.windowText = ""
         self.hWindow = ""
         self.coords = [0, 0]
+        self.stopLock = threading.Lock()
 
         # New code: Create and start the thread
         thr = threading.Thread(target=self.main)
@@ -82,7 +83,6 @@ class Draw():
 
     def sendDraw(self, coords):
         self.coords = coords
-        # win32api.SendMessage(self.hWindow, win32con.WM_PAINT, None, None)
 
     def customDraw(self, hWindow):
 
@@ -129,7 +129,9 @@ class Draw():
                         win32gui.SetPixel(hDC, m[0], m[1]+y, red)
                         win32gui.SetPixel(hDC, m[0]+10, m[1]+y, red)
             except:
+                self.stopLock.acquire()
                 print("pizdec vsemu m[", m[0], ",", m[1], "]")
+                self.stopLock.release()
                 # raise
 
             win32gui.EndPaint(hWnd, paintStruct)
