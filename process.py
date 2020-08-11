@@ -11,7 +11,6 @@ import globals
 
 class Process():
     def __init__(self, exitChar="d"):
-        self.stopLock = threading.Lock()
         self.reader = KeyAsyncReader()
         self.exitChar = ""
         self.reader.startReading(self.readCallback)
@@ -22,12 +21,7 @@ class Process():
             try:
                 #shell = win32com.client.Dispatch("WScript.Shell")
                 # shell.SendKeys('%')
-                handle = win32gui.GetForegroundWindow()
-                bbox = win32gui.GetWindowRect(handle)
-                self.stopLock.acquire()
-                globals.logger.queueLog(handle)
-                globals.logger.queueLog(bbox)
-                self.stopLock.release()
+                globals.logger.queueLog(self.windows.getForegroundWindowText())
                 self.draw.sendDraw(mouse.position)
                 if self.exitChar == exitChar:
                     self.draw.sendExit()

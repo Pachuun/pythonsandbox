@@ -14,7 +14,7 @@ class Draw():
 
         # New code: Create and start the thread
         thr = threading.Thread(target=self.main)
-        thr.setDaemon(False)
+        thr.setDaemon(True)
         thr.start()
 
     def main(self):
@@ -105,17 +105,6 @@ class Draw():
     def wndProc(self, hWnd, message, wParam, lParam):
         if message == win32con.WM_PAINT:
             hDC, paintStruct = win32gui.BeginPaint(hWnd)
-
-            #fontSize = 26
-            #lf = win32gui.LOGFONT()
-            #lf.lfFaceName = "Stencil"
-            #lf.lfHeight = fontSize
-            #lf.lfWeight = 600
-            #lf.lfQuality = win32con.NONANTIALIASED_QUALITY
-
-            #hf = win32gui.CreateFontIndirect(lf)
-            #win32gui.SelectObject(hDC, hf)
-            #win32gui.SetTextColor(hDC, win32api.RGB(240, 0, 50))
             m = self.coords
             red = win32api.RGB(255, 0, 0)  # Red
             rect = win32gui.GetClientRect(hWnd)

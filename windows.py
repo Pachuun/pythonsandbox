@@ -17,3 +17,9 @@ class WindowsUtils():
         hwnd = firefox[0]
 
         return hwnd
+
+    def getForegroundWindowText(self):
+        handle = win32gui.GetForegroundWindow()
+        bbox = win32gui.GetWindowRect(handle)
+        text = win32gui.GetWindowText(handle)
+        return f"Foreground window - [name: {text}, handle: {handle}, bbox: {bbox}]"
