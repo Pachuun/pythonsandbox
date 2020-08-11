@@ -6,6 +6,7 @@ import win32gui
 import win32com.client
 from pynput.mouse import Controller
 import threading
+import globals
 
 
 class Process():
@@ -24,8 +25,8 @@ class Process():
                 handle = win32gui.GetForegroundWindow()
                 bbox = win32gui.GetWindowRect(handle)
                 self.stopLock.acquire()
-                print(handle)
-                print(bbox)
+                globals.logger.queueLog(handle)
+                globals.logger.queueLog(bbox)
                 self.stopLock.release()
                 self.draw.sendDraw(mouse.position)
                 if self.exitChar == exitChar:

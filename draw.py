@@ -3,6 +3,7 @@ import win32con
 import win32gui
 import time
 import threading
+import globals
 
 
 class Draw():
@@ -10,7 +11,6 @@ class Draw():
         self.windowText = ""
         self.hWindow = ""
         self.coords = [0, 0]
-        self.stopLock = threading.Lock()
 
         # New code: Create and start the thread
         thr = threading.Thread(target=self.main)
@@ -37,7 +37,7 @@ class Draw():
         try:
             wndClassAtom = win32gui.RegisterClass(wndClass)
         except Exception as e:
-            print(e)
+            globals.logger.queueLog(e)
             raise e
 
         exStyle = win32con.WS_EX_COMPOSITED | win32con.WS_EX_LAYERED | win32con.WS_EX_NOACTIVATE | win32con.WS_EX_TOPMOST | win32con.WS_EX_TRANSPARENT
@@ -129,16 +129,15 @@ class Draw():
                         win32gui.SetPixel(hDC, m[0], m[1]+y, red)
                         win32gui.SetPixel(hDC, m[0]+10, m[1]+y, red)
             except:
-                self.stopLock.acquire()
-                print("pizdec vsemu m[", m[0], ",", m[1], "]")
-                self.stopLock.release()
+                globals.logger.queueLog(
+                    f"pizdec vsemu m[{m[0]},{m[1]}]")
                 # raise
 
             win32gui.EndPaint(hWnd, paintStruct)
             return 0
 
         elif message == win32con.WM_DESTROY:
-            print('Being destroyed')
+            globals.logger.queueLog('Being destroyed')
             win32gui.PostQuitMessage(0)
             return 0
 
