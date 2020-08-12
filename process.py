@@ -26,8 +26,8 @@ class Process():
                 # shell.SendKeys('%')
                 globals.logger.queueLog(self.windows.getForegroundWindowText())
                 screen = self.windows.getForegroundWindowScreen()
-                im = cv2.imread(np.array(screen))
-                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                #im = cv2.imread(np.array(screen))
+                gray = cv2.cvtColor(np.array(screen), cv2.COLOR_BGR2GRAY)
                 corners = cv2.goodFeaturesToTrack(gray, 25, 0.01, 10)
                 corners = np.int0(corners)
                 for i in corners:
