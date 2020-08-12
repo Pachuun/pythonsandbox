@@ -1,4 +1,5 @@
 import win32gui
+from PIL import ImageGrab
 
 
 class WindowsUtils():
@@ -18,8 +19,16 @@ class WindowsUtils():
 
         return hwnd
 
+    def getForegroundWindowHandle(self):
+        return win32gui.GetForegroundWindow()
+
     def getForegroundWindowText(self):
-        handle = win32gui.GetForegroundWindow()
+        handle = self.getForegroundWindowHandle()
         bbox = win32gui.GetWindowRect(handle)
         text = win32gui.GetWindowText(handle)
         return f"Foreground window - [name: {text}, handle: {handle}, bbox: {bbox}]"
+
+    def getForegroundWindowScreen(self):
+        handle = self.getForegroundWindowHandle()
+        bbox = win32gui.GetWindowRect(handle)
+        return ImageGrab.grab(bbox)

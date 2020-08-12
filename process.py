@@ -8,6 +8,9 @@ from pynput.mouse import Controller
 import threading
 import globals
 
+import numpy as np
+import cv2
+
 
 class Process():
     def __init__(self, exitChar="d"):
@@ -22,7 +25,15 @@ class Process():
                 #shell = win32com.client.Dispatch("WScript.Shell")
                 # shell.SendKeys('%')
                 globals.logger.queueLog(self.windows.getForegroundWindowText())
-                self.draw.sendDraw(mouse.position)
+                screen = self.windows.getForegroundWindowScreen()
+                im = cv2.imread(np.array(screen))
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                corners = cv2.goodFeaturesToTrack(gray, 25, 0.01, 10)
+                corners = np.int0(corners)
+                for i in corners:
+                    x, y = i.ravel()
+
+                self.draw.sendDraw((x, y))
                 if self.exitChar == exitChar:
                     self.draw.sendExit()
                     break
